@@ -51,6 +51,7 @@ urlpatterns = [
     # path('grappelli/', include('grappelli.urls')),
 
     # re_path(r'^jet/', include('jet.urls', 'jet')),
+    re_path(r'^redoc/$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name="swagger-schema"),
     path(  # new
         'swagger-ui/',
