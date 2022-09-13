@@ -267,3 +267,15 @@ SITE_ID = 1
 # PASSWORD_HASHERS = [
 #     'accounts.hashers.CustomPasswordHasher'
 # ]
+
+
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+        'Token': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header'
+        },
+    },
+    'USE_SESSION_AUTH': False
+}
