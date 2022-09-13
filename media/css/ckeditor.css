@@ -1,0 +1,11 @@
+.django-ckeditor-widget {
+  width: calc(100% - 170px);
+}
+
+.django-ckeditor-widget > div {
+  width: 100% !important;
+}
+
+.django-ckeditor-widget iframe.cke_reset {
+    min-height: 500px;
+}

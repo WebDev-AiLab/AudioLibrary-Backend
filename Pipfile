@@ -1,0 +1,42 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+django = "==4.0.4"
+django-extensions = "*"
+djangorestframework = "*"
+django-cors-headers = "*"
+psycopg2-binary = "==2.9.2"
+djangorestframework-simplejwt = "*"
+django-imagekit = "*"
+requests = "*"
+gunicorn = "*"
+django-redis = "*"
+django-storages = "*"
+boto3 = "*"
+python-magic-bin = "*"
+django-filter = "*"
+eyed3 = "*"
+celery = "*"
+pillow = "*"
+django-nested-inline = "*"
+django-treebeard = "*"
+django-autocomplete-light = "*"
+django-admin-interface = "*"
+django-invitations = "*"
+django-ckeditor = "*"
+# will remove it
+django-tinymce = "*"
+django-filebrowser-no-grappelli = "*"
+django-suit = {file = "https://github.com/darklow/django-suit/tarball/v2"}
+pafy = "*"
+django-admin-sortable2 = "*"
+django-related-admin = "*"
+django-admin-volt = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.9"

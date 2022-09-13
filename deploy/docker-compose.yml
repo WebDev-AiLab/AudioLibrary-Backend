@@ -1,0 +1,136 @@
+version: '3'
+
+services:
+
+#  redis:
+#    image: redis:alpine
+#    restart: always
+#    ports:
+#      - 6379:6379
+
+  db:
+    image: postgres:alpine
+    restart: always
+    # 'ports' should be removed on production
+    ports:
+      - 5434:5432
+    env_file: .env
+#    volumes:
+#      - ./postgres/data:/var/lib/postgresql/data
+#      - ./postgres/dumps:/dumps
+
+  backend:
+    image: registry.gitlab.com/agrachyov.com/audiolibrary.backend:latest
+    restart: always
+    volumes:
+      - .env:/code/.env
+    depends_on:
+      - server
+      - db
+    expose:
+      - '8000'
+    # ports:
+    #   - 8000:8000
+
+  frontend:
+    image: registry.gitlab.com/agrachyov.com/audiolibrary.frontend:latest
+#    command: 'yarn server:local'
+    restart: always
+#    volumes:
+#      - .env.local:/code/.env
+#      - .env.local:/code/.env.production
+    depends_on:
+      - server
+      - backend
+    ports:
+      - 3001:3001
+
+  server:
+    image: registry.gitlab.com/agrachyov.com/audiolibrary.server:latest
+    restart: always
+    ports:
+      - '443:443'
+
+  # postgres:
+  #   image: postgres:alpine
+  #   restart: always
+  #   environment:
+  #     - POSTGRES_USER=misago
+  #     - POSTGRES_PASSWORD=misago
+  #     - POSTGRES_PORT=5432
+  #   expose:
+  #     - '5432'
+  #   ports:
+  #     - '5433:5432'
+
+  # misago:
+  #   image: registry.gitlab.com/agrachyov.com/audiolibrary.forum:latest
+  #   command: sh -c /srv/misago/config/run.sh
+  #   environment:
+  #     # Postgres
+  #     - POSTGRES_USER=misago
+  #     - POSTGRES_PASSWORD=misago
+  #     - POSTGRES_DB=misago
+  #     - POSTGRES_HOST=postgres
+  #     - POSTGRES_TEST_DB=misago_test
+  #     # Superuser
+  #     - SUPERUSER_USERNAME=Admin
+  #     - SUPERUSER_EMAIL=admin@example.com
+  #     - SUPERUSER_PASSWORD=password
+  #   # ports:
+  #     # Map port 8000 in the container to port 8000 on the host
+  #     # This way we can access the forum through http://localhost:8000
+  #     # - "${MISAGO_DEVSERVER_PORT:-8000}:8000"
+  #   depends_on:
+  #     - postgres
+  #     - redis
+  #   tty: true
+  #   volumes:
+  #     # Map in the entire project into the container
+  #     # This makes sure files in the container updates on the fly as we were working locally
+  #     - .:/srv/misago:Z
+  #   expose:
+  #     - '8000'
+
+  # celery:
+  #   image: registry.gitlab.com/agrachyov.com/audiolibrary.forum:latest
+  #   command: celery -A devproject worker --loglevel=info
+  #   environment:
+  #     # Postgres
+  #     - POSTGRES_USER=misago
+  #     - POSTGRES_PASSWORD=misago
+  #     - POSTGRES_DB=misago
+  #     - POSTGRES_HOST=postgres
+  #     - POSTGRES_TEST_DB=misago_test
+  #   depends_on:
+  #     - postgres
+  #     - redis
+  #   tty: true
+  #   volumes:
+  #     # Map in the entire project into the container
+  #     # This makes sure files in the container updates on the fly as we were working locally
+  #     - .:/srv/misago:Z
+
+  redis:
+    image: redis:5
+    restart: unless-stopped
+
+  phpbb:
+    image: registry.gitlab.com/agrachyov.com/audiolibrary.forum.phpbb:latest
+    restart: always
+    ports:
+      - '80:80'
+    volumes:
+      - ./_phpbb:/var/www/html
+
+  phpbb_db:
+    image: mysql:5.7.34
+    restart: always
+    environment:
+      - MYSQL_DATABASE=phpbb
+      - MYSQL_USER=phpbb
+      - MYSQL_PASSWORD=phpbb
+      - MYSQL_ROOT_PASSWORD=phpbb_root
+      - MYSQL_HOST=localhost
+    ports:
+      - "3306:3306"

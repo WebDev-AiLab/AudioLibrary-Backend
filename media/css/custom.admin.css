@@ -1,0 +1,53 @@
+.form-row > div input:not(input[type=checkbox]) {
+    width: calc(100% - 190px);
+}
+
+html body .form-row .select2-container {
+    width: 520px !important;
+}
+
+html body .form-row select {
+    width: 520px;
+}
+
+@media screen and (max-width: 992px) {
+    .form-row > div input {
+        width: 100%;
+    }
+}
+
+button.asg__button-plays {
+    margin-left: 50px;
+    border: none;
+    outline: none;
+
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+
+
+    color: var(--admin-interface-save-button-text-color);
+    background-color: var(--admin-interface-save-button-background-hover-color);
+}
+
+.field-plays_count > div {
+    display: flex;
+}
+
+.field-plays_count > div div.readonly {
+    margin-left: 0;
+}
+
+.hide {
+    display:none;
+}
+
+/*
+#artistsite_set-group .field-source select {
+    width: 100% !important;
+}
+
+#artistsite_set-group .inline-deletelink {
+    margin-top: 8px !important;
+}
+*/

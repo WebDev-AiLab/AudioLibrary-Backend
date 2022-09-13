@@ -1,0 +1,22 @@
+{% extends "admin/change_list.html" %}
+
+{% block extrahead %}
+<style>
+    .vLargeTextField {
+        width: calc(100% - 15px);
+        resize: vertical !important;
+    }
+
+</style>
+
+<script>
+    window.addEventListener('load', () => {
+       const textarea = document.querySelectorAll('.vLargeTextField');
+            console.log(textarea);
+            for (let i = 0; i < textarea.length; i++) {
+                textarea[i].setAttribute('rows', 2);
+            }
+    });
+
+</script>
+{% endblock %}

@@ -1,0 +1,11 @@
+.hide {
+    display: none !important;
+}
+
+.input-file__table {
+    margin-top: 25px;
+}
+
+.input-file__info {
+    margin-bottom: 10px;
+}

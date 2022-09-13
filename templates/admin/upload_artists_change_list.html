@@ -1,0 +1,47 @@
+{% extends "admin/change_list.html" %}
+
+{% block content_title %}
+    <h1> Upload Artists from CSV file </h1>
+{% endblock %}
+
+{% block result_list %}
+    <div class="input-file__inner py-5 px-2 d-flex justify-content-center align-items-center flex-column">
+        <div class="input-file__inner__button py-5 px-2 d-flex justify-content-center align-items-center">
+            <label class="btn btn-primary input-file__inner__button__label" for="file-0.3893264303699131">
+                <div class="px-3 text-uppercase text-nowrap">Select .CSV File</div>
+            </label>
+            <input accept=".csv" name="files" type="file" id="file-0.3893264303699131" class="d-none">
+        </div>
+    </div>
+    <div class="input-file__table hide">
+        <div class="input-file__info"></div>
+        <div class="results">
+            <table>
+                <thead>
+                    <tr>
+                        <th>
+                            <div class="text">
+                                <a href="javascript:void(0);">Artist Name</a>
+                            </div>
+                        </th>
+                        <th>
+                            <div class="text">
+                                <a href="javascript:void(0);">Status</a>
+                            </div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody id="js-csv-tbody">
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+
+{% block pagination %}
+    <!-- custom styles for this page -->
+    <link href="/media/css/custom.admin.upload.css" type="text/css" media="screen" rel="stylesheet">
+    <script src="/media/js/admin-upload.js"></script>
+    <script src="/media/js/jquery.csv.js"></script>
+{% endblock %}

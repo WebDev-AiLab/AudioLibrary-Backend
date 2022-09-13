@@ -1,0 +1,52 @@
+{% extends "admin/change_list.html" %}
+
+{% block content_title %}
+    <h1> Upload Tracks </h1>
+{% endblock %}
+
+{% block result_list %}
+    <div class="input-file__inner py-5 px-2 d-flex justify-content-center align-items-center flex-column">
+        <div class="input-file__inner__button py-5 px-2 d-flex justify-content-center align-items-center">
+            <label class="btn btn-primary input-file__inner__button__label" for="file-0.3893264303699132">
+                <div class="px-3 text-uppercase text-nowrap">Select .MP3 Files</div>
+            </label>
+            <input accept=".mp3" name="files" multiple type="file" id="file-0.3893264303699132" class="d-none">
+        </div>
+    </div>
+    <div class="input-file__table hide">
+        <div class="input-file__info"></div>
+        <div class="results">
+            <table>
+                <thead>
+                    <tr>
+                        <th>
+                            <div class="text">
+                                <a href="javascript:void(0);">Track Title</a>
+                            </div>
+                        </th>
+                        <th>
+                            <div class="text">
+                                <a href="javascript:void(0);">Size</a>
+                            </div>
+                        </th>
+                        <th>
+                            <div class="text">
+                                <a href="javascript:void(0);">Status</a>
+                            </div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody id="js-mp3-tbody">
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+
+{% block pagination %}
+    <!-- custom styles for this page -->
+    <link href="/media/css/custom.admin.upload.css" type="text/css" media="screen" rel="stylesheet">
+    <script src="/media/js/admin-upload.js"></script>
+    <script src="/media/js/jquery.csv.js"></script>
+{% endblock %}

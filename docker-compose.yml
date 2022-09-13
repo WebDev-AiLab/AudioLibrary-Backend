@@ -1,0 +1,122 @@
+version: '3.10'
+
+services:
+
+  backend:
+    build: ./
+    volumes:
+      - ./:/usr/src/app/
+    networks:
+      - app-network
+    restart: always
+    command: python manage.py runserver 0.0.0.0:8000
+    ports:
+        - 8000:8000
+    env_file:
+        - .env
+    depends_on:
+        - db
+
+  redis:
+    volumes:
+      - ./:/usr/src/app/
+    networks:
+      - app-network
+    image: redis:alpine
+    restart: always
+    ports:
+      - 6379:6379
+
+  db:
+    networks:
+      - app-network
+    image: postgres:13.0-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=kevs
+      - POSTGRES_DB=audio
+      - POSTGRES_SERVER=localhost
+    env_file:
+      - .env
+    ports:
+      - "5432:5432"
+
+  flower:
+    networks:
+      - app-network
+    image: mher/flower
+    restart: always
+    volumes:
+      - ./:/usr/src/app/
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - FLOWER_PORT=5555
+      - FLOWER_BASIC_AUTH=admin:4mNzABxmeNCAN3zOHLt0cFl9Vax9lfPZ
+    depends_on:
+      - redis
+    ports:
+      - 5555:5555
+
+  celery:
+    networks:
+      - app-network
+    build: ./
+    command: pipenv run celery -A audiolibrary_django worker -l info
+    restart: always
+    volumes:
+      - ./:/usr/src/app/
+    environment:
+      - DEBUG=1
+      - SECRET_KEY=dbaa1_i7%*3r9-=z-+_mz4r-!qeed@(-a_r(g@k8jo8y3r27%m
+      - DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]
+      - POSTGRES_HOST=db
+    depends_on:
+      - redis
+
+  celery-beat:
+    networks:
+      - app-network
+    build: ./
+    command: pipenv run celery -A audiolibrary_django beat -l info
+    restart: always
+    volumes:
+      - ./:/usr/src/app/
+    environment:
+      - DEBUG=1
+      - SECRET_KEY=dbaa1_i7%*3r9-=z-+_mz4r-!qeed@(-a_r(g@k8jo8y3r27%m
+      - DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]
+      - POSTGRES_HOST=db
+    depends_on:
+      - redis
+
+volumes:
+  postgres_data:
+
+networks:
+  app-network:
+
+
+#  backend:
+#    image: registry.gitlab.com/agrachyov.com/audiolibrary.backend:latest
+#    restart: always
+#    env_file: .env
+#    depends_on:
+#      - server
+#      - db
+#
+#  frontend:
+#    image: registry.gitlab.com/agrachyov.com/audiolibrary.frontend:latest
+#    restart: always
+#    env_file: .env
+#    depends_on:
+#      - server
+#      - backend
+#
+#  server:
+#    image: registry.gitlab.com/agrachyov.com/audiolibrary.server:latest
+#    restart: always
+#    ports:
+#      - '443:443'
+

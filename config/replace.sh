@@ -1,0 +1,1 @@
+sed -i 's/python-magic-bin/python-magic/' Pipfile
