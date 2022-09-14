@@ -21,7 +21,7 @@ from django.views.static import serve
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework import permissions
-
+from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
 from settings.path import SITE_URL
 
 # from filebrowser.sites import site
@@ -51,19 +51,9 @@ urlpatterns = [
     # path('grappelli/', include('grappelli.urls')),
 
     # re_path(r'^jet/', include('jet.urls', 'jet')),
-    re_path(r'^redoc/$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
-    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name="swagger-schema"),
-    path(  # new
-        'swagger-ui/',
-        TemplateView.as_view(
-            template_name='swagger.html',
-            extra_context={'schema_url': 'openapi-schema'}
-        ),
-        name='swagger-ui'),
-    re_path(  # new
-        r'^swagger(?P<format>\.json|\.yaml)$',
-        schema_view.without_ui(cache_timeout=0),
-        name='schema-json'),
+    path('docs/', SpectacularAPIView.as_view(), name='schema'),
+    path('swagger/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    path('redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
     path('admin/', admin.site.urls),
     path('tracks/', include('tracks.urls')),
     path('accounts/', include('accounts.urls')),

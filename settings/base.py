@@ -50,7 +50,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'corsheaders',
     'rest_framework_swagger',
-    'drf_yasg',
+    'drf_spectacular',
     # "django.contrib.sites",
     # "django.contrib.flatpages",
     # "invitations",
@@ -230,7 +230,7 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 20,
-    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema'
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
 USE_X_FORWARDED_HOST = True
@@ -269,13 +269,21 @@ SITE_ID = 1
 # ]
 
 
-SWAGGER_SETTINGS = {
-    'SECURITY_DEFINITIONS': {
-        'Token': {
-            'type': 'apiKey',
-            'name': 'Authorization',
-            'in': 'header'
-        },
-    },
-    'USE_SESSION_AUTH': False
+# SWAGGER_SETTINGS = {
+#     'SECURITY_DEFINITIONS': {
+#         'Token': {
+#             'type': 'apiKey',
+#             'name': 'Authorization',
+#             'in': 'header'
+#         },
+#     },
+#     'USE_SESSION_AUTH': False
+# }
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Your Project API',
+    'DESCRIPTION': 'Your project description',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    # OTHER SETTINGS
 }
