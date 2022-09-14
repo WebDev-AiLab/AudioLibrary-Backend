@@ -18,6 +18,7 @@ class PageView(ModelViewSet):
     queryset = Page.objects.all()
     permission_classes = [IsAuthenticatedOrReadOnly]
     filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
+    serializer_class = PageSerializer
     ordering_fields = ['title', 'created', ]
     filterset_fields = ['title', 'section', 'type', 'page']
     ordering = ['section', 'order', '-created']  # default
