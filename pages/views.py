@@ -17,8 +17,7 @@ from settings.cache import CACHE_TTL
 class PageView(ModelViewSet):
     queryset = Page.objects.all()
     permission_classes = [IsAuthenticatedOrReadOnly]
-    filter_backends = [OrderingFilter, SearchFilter] #DjangoFilterBackend
-    serializer_class = PageLightSerializer
+    filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
     ordering_fields = ['title', 'created', ]
     filterset_fields = ['title', 'section', 'type', 'page']
     ordering = ['section', 'order', '-created']  # default
