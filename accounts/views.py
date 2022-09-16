@@ -194,13 +194,16 @@ class UserAuthGoogle(APIView):
                 }, status=status.HTTP_200_OK)
 
         except Http404:
-            user = serializer.create(serializer.validated_data)
-            token = RefreshToken.for_user(user)
-            return Response({
-                'id': user.id,
-                'access': str(token.access_token),
-                'refresh': str(token)
-            }, status=status.HTTP_201_CREATED)
+            try:
+                user = serializer.create(serializer.validated_data)
+                token = RefreshToken.for_user(user)
+                return Response({
+                    'id': user.id,
+                    'access': str(token.access_token),
+                    'refresh': str(token)
+                }, status=status.HTTP_201_CREATED)
+            except IntegrityError:
+                return Response('Not a unique name', status=status.HTTP_400_BAD_REQUEST)
 
 
 
