@@ -28,13 +28,14 @@ class User(AbstractUser, GenericUUIDModel, GenericIPCatcher):
     is_guest = models.BooleanField(_('Guest'), default=False)
     is_active = models.BooleanField(_('Active'), default=True)  # notice that true by default
     is_verified = models.BooleanField(_('Verified by Email'), default=False)
+    password = models.CharField(_("password"), blank=True, null=True, max_length=128)
+    email = models.EmailField(_("email address"), unique=True)
 
     # copied from user itself
     date_joined = models.DateTimeField(_("Registration Date"), default=timezone.now)
     username = models.CharField(
         _("login"),
         max_length=150,
-        unique=True,
         help_text=_(
             "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
         ),

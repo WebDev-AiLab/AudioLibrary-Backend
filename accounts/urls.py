@@ -21,6 +21,7 @@ urlpatterns = [
     path('auth/restore/', views.UserRestorePasswordView.as_view(), name='restore-password'),
     path('auth/deactivate/', views.UserDeactivateView.as_view(), name='restore-password'),
     path('auth/create_password/', views.UserChangePasswordView.as_view(), name='restore-password'),
+    path('auth/google/', views.UserAuthGoogle.as_view(), name='google-user'),
 
     # statistics
     path('statistics/', views.StatisticsView.as_view()),

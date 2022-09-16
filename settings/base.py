@@ -25,7 +25,7 @@ print(load_env)
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-trj)sw9k7eb)syo9_auhoxproxq^l8+^f^%jl1xx^hcygh(i)o'
-
+SECRET_KEY_AUTH = 'nasdas9etqwresandvzxdawwer))qweqwe334'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(int(get_env("DEBUG", "1")))
 

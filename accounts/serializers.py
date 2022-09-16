@@ -50,14 +50,14 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=True, min_length=6, max_length=255)
     username = serializers.CharField(write_only=True, required=True, min_length=4, validators=[
         UniqueValidator(queryset=User.objects.all(), message=_('Username is already taken')), validate_username_reserved])
-    captcha = serializers.CharField(write_only=True, required=True, validators=[grecaptcha_validator()])
+    # captcha = serializers.CharField(write_only=True, required=True, validators=[grecaptcha_validator()])
 
     # this url will be sent to user to verify registration, should be included into POST
     # callback = serializers.CharField(required=True)
 
     class Meta:
         model = User
-        fields = ['email', 'username', 'password', 'captcha']
+        fields = ['email', 'username', 'password']
 
     def create(self, validated_data):
         user = User.objects.create(
@@ -72,6 +72,46 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         user.set_password(validated_data['password'])
         user.save()
         return user
+
+    def create_google(self, validated_data):
+        user = User.objects.create(
+            is_active=True,  # active by default
+            is_guest=False,
+            username=validated_data['username'],
+            last_login=timezone.now(),
+            email=validated_data['email']
+        )
+
+        # hash and save password
+        # user.set_password(validated_data['password'])
+        user.save()
+        return user
+
+
+class UserAuthGoogleSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField()
+    username = serializers.CharField()
+    secret_key = serializers.CharField()
+
+
+    def create(self, validated_data):
+        user = User.objects.create(
+            is_active=True,  # active by default
+            is_guest=False,
+            username=validated_data['username'],
+            last_login=timezone.now(),
+            email=validated_data['email']
+        )
+
+        # hash and save password
+        # user.set_password(validated_data['password'])
+        user.save()
+        return user
+
+    class Meta:
+        model = User
+        fields = ['email', 'username', 'secret_key']
+        extra_kwargs = {'password': {'write_only': True}}
 
 
 class UserVerificationSerializer(serializers.ModelSerializer):

@@ -42,6 +42,7 @@ class TrackView(ModelViewSet):
     filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
     ordering_fields = ['title', 'created', 'votes_count', 'comments', 'plays_count']
     filterset_fields = ['artist', 'label', 'album', 'show_new_releases']
+    search_fields = ['title']
     ordering = ['created']  # default
     pagination_class = StandardResultsSetPagination
 
@@ -64,6 +65,7 @@ class TrackView(ModelViewSet):
         queryset = self.filter_queryset(self.get_queryset())
 
         ordering = request.query_params.get('ordering')
+        print(request.query_params)
 
         # trending
         # the logic is simple - order tracks by number of likes in the last day

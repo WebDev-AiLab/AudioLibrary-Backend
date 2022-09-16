@@ -1,18 +1,23 @@
+from botocore.serialize import QuerySerializer
+from django.db import IntegrityError
+from django.http import Http404
 from django.shortcuts import render
-from rest_framework.generics import CreateAPIView
+from drf_spectacular.utils import extend_schema, OpenApiParameter
+from rest_framework.generics import CreateAPIView, get_object_or_404
 from rest_framework import status, permissions
 from rest_framework.templatetags import rest_framework
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.generics import ListAPIView, DestroyAPIView
 
+import settings
 from tools.location import get_location
 from tools.visitor import get_visitor_ip_address
 from .models import Guest, User
 from interactions.models import Vote, Play
 from .serializers import UserPrivateSerializer, CreateGuestSerializer, UserChangePasswordSerializer, \
     UserDeactivateSerializer, UserRegistrationSerializer, UserVerificationSerializer, UserRestorePasswordSerializer, \
-    CreateApplicationSerializer
+    CreateApplicationSerializer, UserAuthGoogleSerializer
 from tracks.serializers import TrackListingSerializer
 from tracks.models import Track
 from tools.string import generate_random_string
@@ -165,6 +170,41 @@ class AccountPrivateTracksView(ListAPIView, DestroyAPIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+class UserAuthGoogle(APIView):
+    permission_classes = (permissions.AllowAny,)
+
+    @extend_schema(request=UserAuthGoogleSerializer)
+    def post(self, request, *args, **kwargs):
+        if request.user.is_authenticated and not request.user.is_guest:
+            return Response(
+                status=status.HTTP_400_BAD_REQUEST)
+        if settings.SECRET_KEY_AUTH != request.data.get('secret_key'):
+            return Response(
+                status=status.HTTP_401_UNAUTHORIZED)
+        serializer = UserAuthGoogleSerializer(data=request.data)
+        serializer.is_valid(True)
+
+        try:
+            if user := get_object_or_404(User, email=request.data.get('email')):
+                token = RefreshToken.for_user(user)
+                return Response({
+                    'id': user.id,
+                    'access': str(token.access_token),
+                    'refresh': str(token)
+                }, status=status.HTTP_200_OK)
+
+        except Http404:
+            user = serializer.create(serializer.validated_data)
+            token = RefreshToken.for_user(user)
+            return Response({
+                'id': user.id,
+                'access': str(token.access_token),
+                'refresh': str(token)
+            }, status=status.HTTP_201_CREATED)
+
+
+
+
 class UserRegistrationView(APIView):
     # default permissions
     permission_classes = (permissions.AllowAny,)
@@ -184,6 +224,9 @@ class UserRegistrationView(APIView):
             # 'access': str(token.access_token),
             # 'refresh': str(token)
         }, status=status.HTTP_201_CREATED)
+
+
+
 
 
 class UserVerificationView(APIView):
