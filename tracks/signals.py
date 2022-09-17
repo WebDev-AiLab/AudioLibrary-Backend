@@ -4,15 +4,15 @@ from .models import Track, Album, Artist, Label, Genre, Style, Submission
 from .utils import process_track, parse_links, create_search_vectors
 
 
-@receiver(post_save, sender=Track)
-def on_track_save(sender, instance, created, **kwargs):
-    instance.generate_thumbnail(save=True)
-    if created:
-        process_track(instance)
-
-    # should be done every time fields change
-    # or just every time
-    create_search_vectors(instance)
+# @receiver(post_save, sender=Track)
+# def on_track_save(sender, instance, created, **kwargs):
+#     instance.generate_thumbnail(save=True)
+#     if created:
+#         process_track(instance)
+#
+#     # should be done every time fields change
+#     # or just every time
+#     create_search_vectors(instance)
 
 
 @receiver(post_save, sender=Album)
