@@ -23,7 +23,8 @@ from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
 from settings.path import SITE_URL
-
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from django.contrib.staticfiles.urls import static
 # from filebrowser.sites import site
 
 # change the title and header in admin panel (j4f)
@@ -69,6 +70,9 @@ urlpatterns = [
     re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
     re_path(r'^static/(?P<path>.*)$', serve, {'document_root': settings.STATIC_ROOT}),
 ]
+
+urlpatterns += staticfiles_urlpatterns()
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # change admin path
 from django.contrib import admin

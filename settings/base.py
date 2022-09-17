@@ -174,11 +174,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
-
-# for serving static files (copy-pasted from stackoverflow)
-STATIC_ROOT = 'static/'
-MEDIA_ROOT = 'media/'
-
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
 # temporary...
 # MEDIA_URL = 'https://audiolibrarybackend.agrachyov.com/'
 
