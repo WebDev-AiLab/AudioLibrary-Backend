@@ -28,7 +28,6 @@ class PageView(ModelViewSet):
     def retrieve(self, request):
         # this is a crutch
         url = request.query_params.get('url')
-        print(request.query_params.get('url'), request.data.get('url'))
         page = get_object_or_404(Page, url_mask=url)
         serializer = PageSerializer(page, context={'request': request})
         return Response(serializer.data)
