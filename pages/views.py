@@ -1,7 +1,8 @@
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework.generics import RetrieveAPIView
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from .models import Page
-from .serializers import PageSerializer, PageLightSerializer
+from .serializers import PageSerializer, PageLightSerializer, PageParam
 from rest_framework.viewsets import ModelViewSet
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
@@ -23,10 +24,11 @@ class PageView(ModelViewSet):
     filterset_fields = ['title', 'section', 'type', 'page']
     ordering = ['section', 'order', '-created']  # default
 
-    # @method_decorator(cache_page(CACHE_TTL))
+    @extend_schema(parameters=[PageParam])
     def retrieve(self, request):
         # this is a crutch
         url = request.query_params.get('url')
+        print(request.query_params.get('url'), request.data.get('url'))
         page = get_object_or_404(Page, url_mask=url)
         serializer = PageSerializer(page, context={'request': request})
         return Response(serializer.data)

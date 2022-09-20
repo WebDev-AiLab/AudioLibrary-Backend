@@ -9,6 +9,10 @@ class PageSerializer(serializers.ModelSerializer):
         exclude = ['is_deletable', 'updated']
 
 
+class PageParam(serializers.Serializer):
+    url = serializers.CharField()
+
+
 class PageLightSerializer(serializers.ModelSerializer):
     class Meta:
         model = Page
