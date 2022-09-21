@@ -20,18 +20,20 @@ class CreateTrackSerializer(serializers.ModelSerializer):
         obj.title = audio.title
         obj.album = audio.album
         obj.year = audio.year
-        try:
-            artist = get_object_or_404(Artist, name=audio.artist)
-            obj.artist.add(artist)
-            obj.save()
-            return obj
-        except:
-            Artist.objects.create(name=audio.artist)
-            artist = get_object_or_404(Artist, name=audio.artist)
-            print(obj, obj.artist)
-            obj.artist.add(artist)
-            obj.save()
-            return obj
+        obj.original_artist = audio.artist
+        obj.save()
+        # try:
+        #     artist = get_object_or_404(Artist, name=audio.artist)
+        #     obj.artist.add(artist)
+        #     obj.save()
+        #     return obj
+        # except:
+        #     Artist.objects.create(name=audio.artist)
+        #     artist = get_object_or_404(Artist, name=audio.artist)
+        #     print(obj, obj.artist)
+        #     obj.artist.add(artist)
+        #     obj.save()
+        return obj
 
 
 
