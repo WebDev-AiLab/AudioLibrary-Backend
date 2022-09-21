@@ -1,4 +1,8 @@
+from django.shortcuts import get_object_or_404
+from mutagen.easyid3 import EasyID3
 from rest_framework import serializers
+from tinytag import TinyTag
+
 from .models import Track, Artist, Style, Label, ArtistImage, Submission, Rating
 from .validators import validate_track_upload
 # from tools.mixins import PictureThumbnailSerializer
@@ -7,10 +11,39 @@ from accounts.models import User
 from tools.baseserializers import S3ImageModelSerializer
 from tools.validators import grecaptcha_validator
 from accounts.serializers import UserPublicLightSerializer
-
+import mutagen
 
 class CreateTrackSerializer(serializers.ModelSerializer):
     file = serializers.FileField(required=True, validators=(validate_track_upload,))
+
+    def _save_meta(self, obj, audio):
+        obj.title = audio.title
+        obj.album = audio.album
+        obj.year = audio.year
+        try:
+            artist = get_object_or_404(Artist, name=audio.artist)
+            obj.artist.add(artist)
+            obj.save()
+            return obj
+        except:
+            Artist.objects.create(name=audio.artist)
+            artist = get_object_or_404(Artist, name=audio.artist)
+            print(obj, obj.artist)
+            obj.artist.add(artist)
+            obj.save()
+            return obj
+
+
+
+
+    def create(self, validated_data):
+        track = Track.objects.create(
+            file=validated_data['file'],
+        )
+        audio = TinyTag.get(f'media/{track.file}')
+        print(audio)
+        return self._save_meta(track, audio)
+
 
     class Meta:
         model = Track

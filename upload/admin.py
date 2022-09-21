@@ -8,5 +8,5 @@ class UploadArtistsAdmin(admin.ModelAdmin):
 
 
 @admin.register(UploadTrack)
-class UploadArtistsAdmin(admin.ModelAdmin):
+class UploadTrackAdmin(admin.ModelAdmin):
     change_list_template = 'admin/upload_tracks_change_list.html'
