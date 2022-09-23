@@ -1,26 +1,29 @@
-from django.shortcuts import get_object_or_404
+import audio_metadata
 from mutagen.easyid3 import EasyID3
 from rest_framework import serializers
 from tinytag import TinyTag
 
-from .models import Track, Artist, Style, Label, ArtistImage, Submission, Rating
-from .validators import validate_track_upload
+from accounts.models import User
+from accounts.serializers import UserPublicLightSerializer
 # from tools.mixins import PictureThumbnailSerializer
 from interactions.models import Play, Vote, Comment
-from accounts.models import User
 from tools.baseserializers import S3ImageModelSerializer
 from tools.validators import grecaptcha_validator
-from accounts.serializers import UserPublicLightSerializer
-import mutagen
+from .models import Track, Artist, Style, Label, ArtistImage, Submission, Rating
+from .validators import validate_track_upload
+
 
 class CreateTrackSerializer(serializers.ModelSerializer):
     file = serializers.FileField(required=True, validators=(validate_track_upload,))
 
-    def _save_meta(self, obj, audio):
-        obj.title = audio.title
-        obj.album = audio.album
-        obj.year = audio.year
-        obj.original_artist = audio.artist
+    def _save_meta(self, obj, metatag, metaaudio):
+        if str(metatag.year).isdigit():
+            obj.year = metatag.year
+        obj.title = metatag.title
+        obj.album = metatag.album
+        obj.original_artist = metatag.artist
+        obj.image = metatag.get_image()
+        obj.duration = metaaudio.streaminfo.duration
         obj.save()
         # try:
         #     artist = get_object_or_404(Artist, name=audio.artist)
@@ -35,17 +38,13 @@ class CreateTrackSerializer(serializers.ModelSerializer):
         #     obj.save()
         return obj
 
-
-
-
     def create(self, validated_data):
         track = Track.objects.create(
             file=validated_data['file'],
         )
-        audio = TinyTag.get(f'media/{track.file}')
-        print(audio)
-        return self._save_meta(track, audio)
-
+        metatag = TinyTag.get(f'media/{track.file}')
+        metaaudio = audio_metadata.load(f'media/{track.file}')
+        return self._save_meta(track, metatag, metaaudio)
 
     class Meta:
         model = Track
