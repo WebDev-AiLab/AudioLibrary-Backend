@@ -1,4 +1,6 @@
 import audio_metadata
+from django.http import Http404
+from django.shortcuts import get_object_or_404
 from mutagen.easyid3 import EasyID3
 from rest_framework import serializers
 from tinytag import TinyTag
@@ -25,17 +27,14 @@ class CreateTrackSerializer(serializers.ModelSerializer):
         obj.image = metatag.get_image()
         obj.duration = metaaudio.streaminfo.duration
         obj.save()
-        # try:
-        #     artist = get_object_or_404(Artist, name=audio.artist)
-        #     obj.artist.add(artist)
-        #     obj.save()
-        #     return obj
-        # except:
-        #     Artist.objects.create(name=audio.artist)
-        #     artist = get_object_or_404(Artist, name=audio.artist)
-        #     print(obj, obj.artist)
-        #     obj.artist.add(artist)
-        #     obj.save()
+        for artist in metaaudio.tags.artist:
+            try:
+                artist = get_object_or_404(Artist, name=artist)
+                obj.artist.add(artist)
+            except Http404:
+                artist = Artist.objects.create(name=artist)
+                obj.artist.add(artist)
+        obj.save()
         return obj
 
     def create(self, validated_data):
@@ -44,6 +43,8 @@ class CreateTrackSerializer(serializers.ModelSerializer):
         )
         metatag = TinyTag.get(f'media/{track.file}')
         metaaudio = audio_metadata.load(f'media/{track.file}')
+        print(metatag)
+        print(metaaudio.tags.artist)
         return self._save_meta(track, metatag, metaaudio)
 
     class Meta:
